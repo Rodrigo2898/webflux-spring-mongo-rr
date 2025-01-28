@@ -1,6 +1,6 @@
 FROM maven:3.9.6-eclipse-temurin-21
 
-RUN apt-get update && apt-get install -qq -y --no-recommends
+RUN apt-get update && apt-get install -qq -y --no-install-recommends
 
 ENV INSTALL_PATH /reactive-flashcards
 
