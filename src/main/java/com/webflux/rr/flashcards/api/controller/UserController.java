@@ -2,7 +2,7 @@ package com.webflux.rr.flashcards.api.controller;
 
 import com.webflux.rr.flashcards.api.controller.request.UserRequest;
 import com.webflux.rr.flashcards.api.controller.response.UserResponse;
-import com.webflux.rr.flashcards.api.mapper.UserMapper;
+import com.webflux.rr.flashcards.domain.document.UserDocument;
 import com.webflux.rr.flashcards.domain.service.UserService;
 import jakarta.validation.Valid;
 import org.slf4j.Logger;
@@ -20,19 +20,18 @@ import static org.springframework.http.MediaType.APPLICATION_JSON_VALUE;
 public class UserController {
 
     private final UserService userService;
-    private final UserMapper userMapper;
+//    private final UserMapper userMapper;
     private final Logger log = LoggerFactory.getLogger(UserController.class);
 
-    public UserController(UserService userService, UserMapper userMapper) {
+    public UserController(UserService userService) {
         this.userService = userService;
-        this.userMapper = userMapper;
     }
 
     @PostMapping(consumes = APPLICATION_JSON_VALUE, produces = APPLICATION_JSON_VALUE)
     @ResponseStatus(HttpStatus.CREATED)
     public Mono<UserResponse> save(@Valid @RequestBody UserRequest userRequest) {
-        return userService.save(userMapper.toDocument(userRequest))
+        return userService.save(UserDocument.requestToDocument(userRequest))
                 .doFirst(() -> log.info("==== Saving a user with fallow data: {}", userRequest))
-                .map(userMapper::toResponse);
+                .map(UserResponse::toResponse);
     }
 }
