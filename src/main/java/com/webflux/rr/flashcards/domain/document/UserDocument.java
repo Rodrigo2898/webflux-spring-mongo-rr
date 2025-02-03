@@ -30,4 +30,12 @@ public record UserDocument(@Id
                 .email(userRequest.email())
                 .build();
     }
+
+    public static UserDocument toDocument(final UserRequest userRequest, final String id) {
+        return UserDocument.builder()
+                .id(id)
+                .name(userRequest.name())
+                .email(userRequest.email())
+                .build();
+    }
 }
