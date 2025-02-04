@@ -1,6 +1,5 @@
 package com.webflux.rr.flashcards.domain.document;
 
-import com.webflux.rr.flashcards.api.controller.request.UserRequest;
 import lombok.Builder;
 import org.springframework.data.annotation.CreatedDate;
 import org.springframework.data.annotation.Id;
@@ -23,19 +22,4 @@ public record UserDocument(@Id
                            OffsetDateTime updatedAt) {
     @Builder(toBuilder = true)
     public UserDocument {}
-
-    public static UserDocument requestToDocument(final UserRequest userRequest) {
-        return UserDocument.builder()
-                .name(userRequest.name())
-                .email(userRequest.email())
-                .build();
-    }
-
-    public static UserDocument toDocument(final UserRequest userRequest, final String id) {
-        return UserDocument.builder()
-                .id(id)
-                .name(userRequest.name())
-                .email(userRequest.email())
-                .build();
-    }
 }

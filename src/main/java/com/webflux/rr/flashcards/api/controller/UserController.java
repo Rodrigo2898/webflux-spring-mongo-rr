@@ -2,8 +2,8 @@ package com.webflux.rr.flashcards.api.controller;
 
 import com.webflux.rr.flashcards.api.controller.request.UserRequest;
 import com.webflux.rr.flashcards.api.controller.response.UserResponse;
+import com.webflux.rr.flashcards.api.mapper.UserMapper;
 import com.webflux.rr.flashcards.core.validation.MongoId;
-import com.webflux.rr.flashcards.domain.document.UserDocument;
 import com.webflux.rr.flashcards.domain.service.UserService;
 import com.webflux.rr.flashcards.domain.service.query.UserQueryService;
 import jakarta.validation.Valid;
@@ -33,24 +33,24 @@ public class UserController {
     @PostMapping(consumes = APPLICATION_JSON_VALUE, produces = APPLICATION_JSON_VALUE)
     @ResponseStatus(HttpStatus.CREATED)
     public Mono<UserResponse> save(@Valid @RequestBody UserRequest userRequest) {
-        return userService.save(UserDocument.requestToDocument(userRequest))
+        return userService.save(UserMapper.ToDocument(userRequest))
                 .doFirst(() -> log.info("==== Saving a user with fallow data: {}", userRequest))
-                .map(UserResponse::toResponse);
+                .map(UserMapper::toResponse);
     }
 
     @GetMapping(produces = APPLICATION_JSON_VALUE, value = "{id}")
-    public Mono<UserResponse> findById(@PathVariable @Valid @MongoId(message = "${userController.id}") String id) {
+    public Mono<UserResponse> findById(@PathVariable @Valid @MongoId(message = "userController.id") String id) {
         return userQueryService.findById(id)
                 .doFirst(() -> log.info("==== Finding a user with follow id {}", id))
-                .map(UserResponse::toResponse);
+                .map(UserMapper::toResponse);
     }
 
     @PutMapping(consumes = APPLICATION_JSON_VALUE, produces = APPLICATION_JSON_VALUE, value = "{id}")
-    public Mono<UserResponse> update(@PathVariable @Valid @MongoId(message = "${userController.id}") String id,
+    public Mono<UserResponse> update(@PathVariable @Valid @MongoId(message = "userController.id") String id,
                                     @Valid @RequestBody UserRequest userRequest) {
-        return userService.update(UserDocument.toDocument(userRequest, id))
+        return userService.update(UserMapper.toDocument(userRequest, id))
                 .doFirst(() -> log.info("==== Updating a user with follow info [body: {}, id: {}]", userRequest, id))
-                .map(UserResponse::toResponse);
+                .map(UserMapper::toResponse);
     }
 
     @DeleteMapping(value = "{id}")

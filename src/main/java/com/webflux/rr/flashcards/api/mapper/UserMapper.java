@@ -1,18 +1,31 @@
-//package com.webflux.rr.flashcards.api.mapper;
-//
-//import com.webflux.rr.flashcards.api.controller.request.UserRequest;
-//import com.webflux.rr.flashcards.api.controller.response.UserResponse;
-//import com.webflux.rr.flashcards.domain.document.UserDocument;
-//import org.mapstruct.Mapper;
-//import org.mapstruct.Mapping;
-//
-//@Mapper(componentModel = "spring")
-//public interface UserMapper {
-//
-//    @Mapping(target = "id", ignore = true)
-//    @Mapping(target = "createdAt", ignore = true)
-//    @Mapping(target = "updatedAt", ignore = true)
-//    UserDocument toDocument(final UserRequest request);
-//
-//    UserResponse toResponse(final UserDocument document);
-//}
+package com.webflux.rr.flashcards.api.mapper;
+
+import com.webflux.rr.flashcards.api.controller.request.UserRequest;
+import com.webflux.rr.flashcards.api.controller.response.UserResponse;
+import com.webflux.rr.flashcards.domain.document.UserDocument;
+
+public class UserMapper {
+
+    public static UserDocument ToDocument(final UserRequest userRequest) {
+        return UserDocument.builder()
+                .name(userRequest.name())
+                .email(userRequest.email())
+                .build();
+    }
+
+    public static UserDocument toDocument(final UserRequest userRequest, final String id) {
+        return UserDocument.builder()
+                .id(id)
+                .name(userRequest.name())
+                .email(userRequest.email())
+                .build();
+    }
+
+    public static UserResponse toResponse(final UserDocument userDocument) {
+        return UserResponse.builder()
+                .id(userDocument.id())
+                .name(userDocument.name())
+                .email(userDocument.email())
+                .build();
+    }
+}
