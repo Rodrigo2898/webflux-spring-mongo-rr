@@ -2,8 +2,12 @@ package com.webflux.rr.flashcards.api.controller;
 
 import com.webflux.rr.flashcards.api.controller.request.DeckRequest;
 import com.webflux.rr.flashcards.api.controller.response.DeckResponse;
+import com.webflux.rr.flashcards.api.controller.response.UserResponse;
 import com.webflux.rr.flashcards.api.mapper.DeckMapper;
+import com.webflux.rr.flashcards.api.mapper.UserMapper;
+import com.webflux.rr.flashcards.core.validation.MongoId;
 import com.webflux.rr.flashcards.domain.service.DeckService;
+import com.webflux.rr.flashcards.domain.service.query.DeckQueryService;
 import jakarta.validation.Valid;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
@@ -20,10 +24,12 @@ import static org.springframework.http.MediaType.APPLICATION_JSON_VALUE;
 public class DeckController {
 
     private final DeckService deckService;
+    private final DeckQueryService deckQueryService;
     private final Logger log = LoggerFactory.getLogger(DeckService.class);
 
-    public DeckController(DeckService deckService) {
+    public DeckController(DeckService deckService, DeckQueryService deckQueryService) {
         this.deckService = deckService;
+        this.deckQueryService = deckQueryService;
     }
 
     @PostMapping(consumes = APPLICATION_JSON_VALUE, produces = APPLICATION_JSON_VALUE)
@@ -34,4 +40,10 @@ public class DeckController {
                 .map(DeckMapper::toResponse);
     }
 
+    @GetMapping(produces = APPLICATION_JSON_VALUE, value = "{id}")
+    public Mono<DeckResponse> findById(@PathVariable @Valid @MongoId(message = "deckController.id") String id) {
+        return deckQueryService.findById(id)
+                .doFirst(() -> log.info("==== Finding a deck with follow id {}", id))
+                .map(DeckMapper::toResponse);
+    }
 }
