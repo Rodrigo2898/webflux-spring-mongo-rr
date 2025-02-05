@@ -12,6 +12,7 @@ import org.slf4j.LoggerFactory;
 import org.springframework.http.HttpStatus;
 import org.springframework.validation.annotation.Validated;
 import org.springframework.web.bind.annotation.*;
+import reactor.core.publisher.Flux;
 import reactor.core.publisher.Mono;
 
 import static org.springframework.http.MediaType.APPLICATION_JSON_VALUE;
@@ -42,6 +43,13 @@ public class DeckController {
     public Mono<DeckResponse> findById(@PathVariable @Valid @MongoId(message = "deckController.id") String id) {
         return deckQueryService.findById(id)
                 .doFirst(() -> log.info("==== Finding a deck with follow id {}", id))
+                .map(DeckMapper::toResponse);
+    }
+
+    @GetMapping(produces = APPLICATION_JSON_VALUE)
+    public Flux<DeckResponse> findAll() {
+        return deckQueryService.findAll()
+                .doFirst(() -> log.info("==== Find all Decks"))
                 .map(DeckMapper::toResponse);
     }
 }

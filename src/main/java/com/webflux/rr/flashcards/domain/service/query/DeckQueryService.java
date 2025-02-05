@@ -6,6 +6,7 @@ import com.webflux.rr.flashcards.domain.repository.DeckRepository;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 import org.springframework.stereotype.Service;
+import reactor.core.publisher.Flux;
 import reactor.core.publisher.Mono;
 
 import java.util.Objects;
@@ -29,5 +30,10 @@ public class DeckQueryService {
                 .switchIfEmpty(Mono.defer(
                         () -> Mono.error(new NotFoundException(DECK_NOT_FOUND.params(id).getMessage()))
                 ));
+    }
+
+    public Flux<DeckDocument> findAll() {
+        return deckRepository.findAll()
+                .doFirst(() -> log.info("==== try to find all decks "));
     }
 }
