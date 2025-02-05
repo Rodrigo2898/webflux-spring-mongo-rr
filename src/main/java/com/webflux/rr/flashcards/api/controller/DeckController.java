@@ -2,9 +2,7 @@ package com.webflux.rr.flashcards.api.controller;
 
 import com.webflux.rr.flashcards.api.controller.request.DeckRequest;
 import com.webflux.rr.flashcards.api.controller.response.DeckResponse;
-import com.webflux.rr.flashcards.api.controller.response.UserResponse;
 import com.webflux.rr.flashcards.api.mapper.DeckMapper;
-import com.webflux.rr.flashcards.api.mapper.UserMapper;
 import com.webflux.rr.flashcards.core.validation.MongoId;
 import com.webflux.rr.flashcards.domain.service.DeckService;
 import com.webflux.rr.flashcards.domain.service.query.DeckQueryService;

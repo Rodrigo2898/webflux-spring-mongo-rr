@@ -1,6 +1,7 @@
 package com.webflux.rr.flashcards.domain.service.query;
 
 import com.webflux.rr.flashcards.domain.document.UserDocument;
+import com.webflux.rr.flashcards.domain.exception.EmailAlreadyUsedException;
 import com.webflux.rr.flashcards.domain.exception.NotFoundException;
 import com.webflux.rr.flashcards.domain.repository.UserRepository;
 import org.slf4j.Logger;
@@ -10,6 +11,7 @@ import reactor.core.publisher.Mono;
 
 import java.util.Objects;
 
+import static com.webflux.rr.flashcards.domain.exception.BaseErrorMessage.EMAIL_ALREADY_USED;
 import static com.webflux.rr.flashcards.domain.exception.BaseErrorMessage.USER_NOT_FOUND;
 
 @Service
@@ -28,6 +30,15 @@ public class UserQueryService {
                 .filter(Objects::nonNull)
                 .switchIfEmpty(Mono.defer(
                         () -> Mono.error(new NotFoundException(USER_NOT_FOUND.params(id).getMessage()))
+                ));
+    }
+
+    public Mono<UserDocument> findByEmail(final String email) {
+        return userRepository.findByEmail(email)
+                .doFirst(() -> log.info("=== try to find user with email: {}", email))
+                .filter(Objects::nonNull)
+                .switchIfEmpty(Mono.defer(
+                        () -> Mono.error(new NotFoundException(EMAIL_ALREADY_USED.params(email).getMessage()))
                 ));
     }
 }
