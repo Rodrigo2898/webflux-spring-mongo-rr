@@ -9,6 +9,7 @@ import org.springframework.data.mongodb.core.mapping.Field;
 
 import java.time.OffsetDateTime;
 import java.util.List;
+import java.util.Objects;
 
 @Document(collection = "studies")
 public record StudyDocument(@Id
@@ -25,4 +26,13 @@ public record StudyDocument(@Id
 
     @Builder(toBuilder = true)
     public StudyDocument {}
+
+    public void addQuestion(Question question) {
+        questions.add(question);
+    }
+
+    public Question getLastQuestionPending() {
+        return questions.stream()
+                .filter(q -> Objects.isNull(q.answeredIn())).findFirst().orElseThrow();
+    }
 }
