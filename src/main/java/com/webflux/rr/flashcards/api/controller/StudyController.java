@@ -3,7 +3,6 @@ package com.webflux.rr.flashcards.api.controller;
 import com.webflux.rr.flashcards.api.controller.request.StudyRequest;
 import com.webflux.rr.flashcards.api.controller.response.QuestionResponse;
 import com.webflux.rr.flashcards.api.mapper.StudyMapper;
-import com.webflux.rr.flashcards.domain.document.StudyDocument;
 import com.webflux.rr.flashcards.domain.service.StudyService;
 import jakarta.validation.Valid;
 import org.slf4j.Logger;

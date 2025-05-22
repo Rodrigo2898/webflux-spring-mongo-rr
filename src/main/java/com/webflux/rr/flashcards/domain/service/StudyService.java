@@ -32,10 +32,9 @@ public class StudyService {
         return userQueryService.findById(document.userId())
                 .flatMap(user -> deckQueryService.findById(document.studyDeck().deckId()))
                 .flatMap(deck -> getCards(document, deck.cards()))
-                .map(study -> {
-                    study.addQuestion(StudyDomainMapper.generateRandomQuestion(study.studyDeck().cards()));
-                    return study;
-                })
+                .map(study -> study
+                        .toBuilder().question(StudyDomainMapper.generateRandomQuestion(study.studyDeck().cards()))
+                        .build())
                 .doFirst(() -> log.info("==== generating a random question"))
                 .flatMap(studyRepository::save)
                 .doOnSuccess(study -> log.info("==== a follow study was save: {}", study));
