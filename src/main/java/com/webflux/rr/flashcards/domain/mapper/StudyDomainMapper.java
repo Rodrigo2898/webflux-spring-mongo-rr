@@ -6,7 +6,6 @@ import com.webflux.rr.flashcards.domain.document.StudyCard;
 
 import java.time.OffsetDateTime;
 import java.util.ArrayList;
-import java.util.HashSet;
 import java.util.Random;
 import java.util.Set;
 import java.util.stream.Collectors;
