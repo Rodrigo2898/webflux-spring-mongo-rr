@@ -1,6 +1,7 @@
 package com.webflux.rr.flashcards.api.exceptionHandler;
 
 import com.fasterxml.jackson.core.JsonProcessingException;
+import com.webflux.rr.flashcards.domain.exception.DeckInStudyException;
 import com.webflux.rr.flashcards.domain.exception.EmailAlreadyUsedException;
 import com.webflux.rr.flashcards.domain.exception.NotFoundException;
 import com.webflux.rr.flashcards.domain.exception.ReactiveFlashCardsException;
@@ -19,6 +20,7 @@ import reactor.core.publisher.Mono;
 @Order(-2)
 public class ApiExceptionHandler implements WebExceptionHandler {
 
+    private final DeckInStudyHandler deckInStudyHandler;
     private final EmailAlreadyUsedHandler emailAlreadyUsedHandler;;
     private final MethodNotAllowHandler methodNotAllowHandler;
     private final NotFoundHandler notFoundHandler;
@@ -29,7 +31,8 @@ public class ApiExceptionHandler implements WebExceptionHandler {
     private final GenericHandler genericHandler;
     private final JsonProcessingHandler jsonProcessingHandler;
 
-    public ApiExceptionHandler(EmailAlreadyUsedHandler emailAlreadyUsedHandler,
+    public ApiExceptionHandler(DeckInStudyHandler deckInStudyHandler,
+                               EmailAlreadyUsedHandler emailAlreadyUsedHandler,
                                MethodNotAllowHandler methodNotAllowHandler,
                                NotFoundHandler notFoundHandler,
                                ConstraintViolationHandler constraintViolationHandler,
@@ -38,6 +41,7 @@ public class ApiExceptionHandler implements WebExceptionHandler {
                                ReactiveFlashCardsHandler reactiveFlashCardsHandler,
                                GenericHandler genericHandler,
                                JsonProcessingHandler jsonProcessingHandler) {
+        this.deckInStudyHandler = deckInStudyHandler;
         this.emailAlreadyUsedHandler = emailAlreadyUsedHandler;
         this.methodNotAllowHandler = methodNotAllowHandler;
         this.notFoundHandler = notFoundHandler;
@@ -52,6 +56,7 @@ public class ApiExceptionHandler implements WebExceptionHandler {
     @Override
     public Mono<Void> handle(ServerWebExchange exchange, Throwable ex) {
         return Mono.error(ex)
+                .onErrorResume(DeckInStudyException.class, e -> deckInStudyHandler.handleException(exchange, e))
                 .onErrorResume(EmailAlreadyUsedException.class, e -> emailAlreadyUsedHandler.handleException(exchange, e))
                 .onErrorResume(MethodNotAllowedException.class, e -> methodNotAllowHandler.handleException(exchange, e))
                 .onErrorResume(NotFoundException.class, e -> notFoundHandler.handleException(exchange, e))
